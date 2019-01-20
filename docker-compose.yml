@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  workspace:
+    image: pilot114/base-workspace72
+    volumes:
+      - "${PWD}:/var/www/tabler"
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    tty: true
+  web:
+    image: pilot114/base-nginx
+    volumes:
+      - "./tabler.conf:/etc/nginx/conf.d/default.conf"
+      - "${PWD}:/var/www/tabler"
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=tabler.local
+    command: ['nginx', '-g', 'daemon off;']
+    restart: always
+    depends_on:
+      - php
+  php:
+    image: pilot114/base-php-wshell
+    restart: always
+    volumes:
+      - "${PWD}:/var/www/tabler"

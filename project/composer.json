@@ -1,0 +1,7 @@
+{
+    "name": "pilot114/tabler",
+    "type": "project",
+    "require": {
+        "doctrine/dbal": "^2.9"
+    }
+}
