@@ -1,22 +1,22 @@
 <template>
     <b-container>
         <b-row>
-            <b-col cols="4" class="nav">
-                <div v-if="loading">Загрузка...</div>
+            <b-col cols="3">
+                <div v-if="tables.length == 0">Загрузка...</div>
 
                 <b-list-group v-else>
                     <b-list-group-item button v-for="(table, idx) in tables" @click="selectTable(table)">
                         {{ table.name }}
-                        <b-button size="sm" variant="danger" style="margin-left: 2em;">
+                        <b-button size="sm" variant="danger" class="float-right">
                             Удалить
                         </b-button>
                     </b-list-group-item>
-                    <b-list-group-item button @click="currentTable = null">
-                         + Добавить
+                    <b-list-group-item button @click="selectTable()">
+                        + Добавить
                     </b-list-group-item>
                 </b-list-group>
             </b-col>
-            <b-col cols="8">
+            <b-col cols="9">
                 <TableView :schema="currentTable" v-if="currentTable"></TableView>
                 <TableCreate v-else></TableCreate>
             </b-col>
@@ -27,14 +27,13 @@
 <script>
     import TableView from './TableView'
     import TableCreate from './TableCreate'
-    import { mapState, mapActions } from 'vuex'
+    import {mapState, mapActions, mapMutations} from 'vuex'
 
     export default {
         name: "Page",
-        components: { TableView, TableCreate },
+        components: {TableView, TableCreate},
         data() {
             return {
-                loading: true,
                 errored: false
             }
         },
@@ -44,15 +43,18 @@
                 'tables'
             ])
         },
-        mounted() {
-            this.$store.dispatch('fetchTables');
+        created() {
+            this.fetchTables();
         },
         methods: {
             selectTable(table) {
-                this.currentTable = table;
+                this.setCurrentTable(table);
             },
             ...mapActions([
                 'fetchTables'
+            ]),
+            ...mapMutations([
+                'setCurrentTable'
             ])
         }
     }
