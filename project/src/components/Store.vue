@@ -6,6 +6,14 @@
 
     Vue.use(Vuex);
 
+    let backend = axios.create({
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+    });
+
     export default new Vuex.Store({
         state: {
             currentTable: null,
@@ -17,24 +25,22 @@
             },
             setCurrentTable(state, table) {
                 state.currentTable = table;
-            }
+            },
         },
-
         actions: {
             fetchTables({commit}) {
-                axios
+                backend
                     .get('http://localhost/api/v1/table')
                     .then(response => {
-                        setTimeout(() => {
-                            commit('setTables', response.data);
-                        },1000);
+                        commit('setTables', response.data);
                     });
-                /*
-                    .catch(error => {
-                        this.errored = true;
-                    })
-                    .finally(() => (this.loading = false));
-                    */
+            },
+            createTable({commit}, data) {
+                backend
+                    .post('http://localhost/api/v1/table', data)
+                    .then(response => {
+                        commit('setTables', response.data);
+                    });
             }
         }
     })

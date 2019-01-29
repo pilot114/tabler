@@ -17,7 +17,7 @@
                 </b-list-group>
             </b-col>
             <b-col cols="9">
-                <TableView :schema="currentTable" v-if="currentTable"></TableView>
+                <TableView :table="currentTable" v-if="currentTable"></TableView>
                 <TableCreate v-else></TableCreate>
             </b-col>
         </b-row>

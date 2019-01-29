@@ -16,8 +16,9 @@
 
                 <b-form-select
                         class="mb-2 mr-sm-2 mb-sm-0"
-                        v-model="currentField.type"
-                        :options="{ 'string': 'String', 'number': 'Number'}"
+                        v-model=currentField.type
+                        :options=types
+                        selected="String"
                 >
                 </b-form-select>
                 <b-button @click="addField" variant="primary">Добавить</b-button>
@@ -28,13 +29,15 @@
             <b-table hover bordered fixed head-variant="dark" :items="schema">
             </b-table>
 
-            <b-button type="submit" variant="primary">Сохранить</b-button>
+            <b-button type="submit" variant="primary" @click="">Сохранить</b-button>
             <b-button type="reset" variant="danger" style="margin-left: .5em">Очистить</b-button>
         </b-form>
     </div>
 </template>
 
 <script>
+    import { mapActions } from 'vuex'
+
     export default {
         name: "TableCreate",
         data() {
@@ -42,18 +45,28 @@
                 name: null,
                 schema: [],
                 show: true,
+                types: [
+                    { value: 'string', text: 'String' },
+                    { value: 'number', text: 'Number' },
+                ],
 
-                currentField: {name:'', type:''}
+                currentField: {name:'', type:'string'}
             }
         },
         methods: {
             onSubmit (e) {
                 e.preventDefault();
+
+                this.createTable({
+                    name: this.name,
+                    schema: this.schema,
+                });
             },
             onReset (e) {
                 e.preventDefault();
                 this.name = null;
                 this.schema = [];
+                this.currentField = {name:'', type:'string'};
 
                 /* Trick to reset/clear native browser form validation state */
                 this.show = false;
@@ -63,6 +76,9 @@
                 this.schema.push(JSON.parse(JSON.stringify(this.currentField)));
                 this.currentField.name = null;
             },
+            ...mapActions([
+                'createTable',
+            ]),
         }
     }
 </script>
